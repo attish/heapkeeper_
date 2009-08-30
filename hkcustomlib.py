@@ -249,7 +249,9 @@ def edit_files(files):
             'call your editor of choice.')
         return False
 
-    subprocess.call(editor.split() + files)
+    quoted_files = [ ('"%s"' % file.replace('"', r'\"'))
+                     for file in files ]
+    subprocess.call(editor + ' ' + ' '.join(quoted_files), shell=True)
 
     def did_file_change(file):
         new_content = hkutils.file_to_string(file, return_none=True)
