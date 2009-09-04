@@ -2208,12 +2208,17 @@ class Section(object):
         threaded structure.
         Type: bool
         Default value: False
+    count --- If True, the number of posts in the section is displayed
+        after the title.
+        Type: bool
+        Default value: False
     """
 
     def __init__(self,
                  title=hkutils.NOT_SET,
                  posts=hkutils.NOT_SET,
-                 is_flat=False):
+                 is_flat=False,
+                 count=False):
 
         super(Section, self).__init__()
         hkutils.set_dict_items(self, locals())
@@ -2657,8 +2662,13 @@ class Generator(object):
         threads = self._postdb.threads()
         section = options.section
 
-
-        l.append(Html.section_begin('section_%s' % (sectionid,),section.title))
+        section_header = section.title
+        if section.count:
+            num = len(section.posts) if section.posts != CYCLES \
+                    else len(options.postdb.cycles())
+            section_header += ' (%d)' % (num,)
+        l.append(Html.section_begin('section_%s' % (sectionid,),
+                                    section_header))
 
         posts = section.posts
 
